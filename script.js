@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("etch-a-sketch-container"); // get key elements
     const resetButton = document.getElementById("reset-button");
 
+    let isDrawing = false; // flag to check if mouse is down
+
     function createGrid(n) { // function to create grid
         container.innerHTML = ""; // Clear previous grid
         container.style.display = "grid"; // make container a css grid
@@ -15,12 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
             let cell = document.createElement("div"); // create div element
             cell.classList.add("grid-cell"); // add class to div element for styling
 
-            container.appendChild(cell);  // append cell to container
-
-            cell.addEventListener("mouseover", () => { // add event listener to cell
-                cell.style.backgroundColor = "black"; // Drawing effect
+            // click and hold to draw
+            cell.addEventListener("mousedown", () => {
+                isDrawing = true;
+                cell.style.backgroundColor = "black"; // Start drawing on click
             });
+            
+            cell.addEventListener("mouseover", () => {
+                if (isDrawing) {
+                    cell.style.backgroundColor = "black"; // Continue drawing when dragging
+                }
+            });
+
+            container.appendChild(cell);  // append cell to container
+            
         }
+        // stop drawing when mouse is released
+        document.addEventListener("mouseup", () => {
+            isDrawing = false;
+        });
     }
 
     function setup() {
