@@ -5,11 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const rainbowButton = document.getElementById("rainbow-button");
     const resizeButton = document.getElementById("resize-button");
 
-    let isDrawing = false;
+    let isDrawing = false; // Track if mouse is down
     let isEraserActive = false; // Track if eraser is active
     let currentColor = "black"; // Default drawing color
+    let isRainbowMode = false; // Track if rainbow mode is active
 
-    function createGrid(n) {
+    function createGrid(n) { // function to create grid
         container.innerHTML = "";
         container.style.display = "grid";
         container.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
@@ -28,24 +29,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function enableDrawing() {
-        const cells = document.querySelectorAll(".grid-cell");
-
-        cells.forEach(cell => {
-            cell.addEventListener("mousedown", () => {
+        const cells = document.querySelectorAll(".grid-cell"); // select all grid cells
+    
+        // Function to determine the color to apply
+        function getColor() {
+            if (isEraserActive) return "white"; // set color to white when eraser mode is active
+            if (isRainbowMode) return randomColor(); // set color to random when rainbow mode is active
+            return currentColor; // other wise use black as the default color
+        }
+    
+        cells.forEach(cell => {  // add event listeners to each cell
+            cell.addEventListener("mousedown", () => { // click to draw
                 isDrawing = true;
-                cell.style.backgroundColor = isEraserActive ? "white" : currentColor;
+                cell.style.backgroundColor = getColor();
             });
-
-            cell.addEventListener("mouseover", () => {
+    
+            cell.addEventListener("mouseover", () => { // drag to draw
                 if (isDrawing) {
-                    cell.style.backgroundColor = isEraserActive ? "white" : currentColor;
+                    cell.style.backgroundColor = getColor();
                 }
             });
-        });
 
-        document.addEventListener("mouseup", () => {
-            isDrawing = false;
+            document.addEventListener("mouseup", () => {  // stop drawing when mouse is up
+                isDrawing = false;
+            });
         });
+    
+        
     }
 
     function toggleEraser() {
@@ -58,6 +68,24 @@ document.addEventListener("DOMContentLoaded", () => {
             currentColor = "black"; // Revert to drawing color
         }
     }
+
+    function toggleRainbowMode(){ // rainbow mode
+        isRainbowMode = !isRainbowMode; 
+        rainbowButton.classList.toggle("active", isRainbowMode);  
+
+    }
+
+    function randomColor() {
+        let r, g, b; // RGB values
+        do {
+            r = Math.floor(Math.random() * 256); // generate random number between 0 and 255
+            g = Math.floor(Math.random() * 256);
+            b = Math.floor(Math.random() * 256);
+        } while (r > 240 && g > 240 && b > 240); // ensure color is not too light
+
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
 
     function setup() {
         let gridSize = prompt("Enter grid size (e.g., 16 for a 16x16 grid):");
@@ -73,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resetButton.addEventListener("click", setup);
     eraserButton.addEventListener("click", toggleEraser);
+    rainbowButton.addEventListener("click", toggleRainbowMode);
 
     setup();
 });
