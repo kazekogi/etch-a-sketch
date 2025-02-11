@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("etch-a-sketch-container");
+    const container = document.getElementById("etch-a-sketch-container"); // select the containers
     const resetButton = document.getElementById("reset-button");
     const eraserButton = document.getElementById("eraser-button");
     const rainbowButton = document.getElementById("rainbow-button");
@@ -12,23 +12,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function createGrid(n) { // function to create grid
         container.innerHTML = "";
-        container.style.display = "grid";
-        container.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+        container.style.display = "grid"; 
+        container.style.gridTemplateColumns = `repeat(${n}, 1fr)`; // set grid columns and rows
         container.style.gridTemplateRows = `repeat(${n}, 1fr)`;
-        container.style.width = "80vh";
+        container.style.width = "80vh"; // set width and height
         container.style.height = "80vh";
-        container.style.border = "2px solid black";
+        container.style.border = "2px solid black"; // add border to the grid
 
-        for (let i = 0; i < n * n; i++) {
-            let cell = document.createElement("div");
-            cell.classList.add("grid-cell");
-            container.appendChild(cell);
+        for (let i = 0; i < n * n; i++) { // loop to create cells
+            let cell = document.createElement("div"); // create a new div for each cell
+            cell.classList.add("grid-cell"); // add class to the cell
+            container.appendChild(cell); // append cell to the container
         }
 
         enableDrawing();
     }
 
-    function enableDrawing() {
+    function enableDrawing() { // function to enable drawing on the grid
         const cells = document.querySelectorAll(".grid-cell"); // select all grid cells
     
         // Function to determine the color to apply
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
     }
 
-    function toggleEraser() {
+    function toggleEraser() { // function to toggle eraser mode
         isEraserActive = !isEraserActive; // Toggle eraser state
         eraserButton.classList.toggle("active", isEraserActive); // Toggle button style
 
@@ -69,13 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function toggleRainbowMode(){ // rainbow mode
-        isRainbowMode = !isRainbowMode; 
+    function toggleRainbowMode(){ // function to toggle rainbow mode
+        isRainbowMode = !isRainbowMode; // toggle rainbow mode
         rainbowButton.classList.toggle("active", isRainbowMode);  
 
     }
 
-    function randomColor() {
+    function randomColor() { // function to generate random color 
         let r, g, b; // RGB values
         do {
             r = Math.floor(Math.random() * 256); // generate random number between 0 and 255
@@ -86,22 +86,30 @@ document.addEventListener("DOMContentLoaded", () => {
         return `rgb(${r}, ${g}, ${b})`;
     }
 
+    function resize() { // function to resize the grid
+        let gridSize = prompt("Enter grid size (e.g., 16 for a 16x16 grid):"); // prompt user for grid size
+        gridSize = parseInt(gridSize); // convert to integer
 
-    function setup() {
-        let gridSize = prompt("Enter grid size (e.g., 16 for a 16x16 grid):");
-        gridSize = parseInt(gridSize);
-
-        if (isNaN(gridSize) || gridSize < 1 || gridSize > 100) {
+        if (isNaN(gridSize) || gridSize < 1 || gridSize > 100) { // check if input is valid
             alert("Please enter a number between 1 and 100.");
             return;
         }
 
-        createGrid(gridSize);
+        createGrid(gridSize); // create new grid with the specified size
     }
 
-    resetButton.addEventListener("click", setup);
+    function reset() { // function to reset the grid
+        const cells = document.querySelectorAll(".grid-cell"); // select all grid cells
+        cells.forEach(cell => {
+            cell.style.backgroundColor = "white"; // reset color to white
+        });
+    }
+
+    // add event listeners to all the buttons
+    resetButton.addEventListener("click", reset); 
     eraserButton.addEventListener("click", toggleEraser);
     rainbowButton.addEventListener("click", toggleRainbowMode);
+    resizeButton.addEventListener("click", resize); 
 
-    setup();
+    resize(); // create initial grid
 });
